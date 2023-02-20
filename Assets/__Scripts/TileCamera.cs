@@ -38,13 +38,17 @@ public class TileCamera : MonoBehaviour
             for (int i = 0; i < W; i++){
                 if(tileNums[i] == ".."){
                     MAP[i, j] = 0;
+                    print("Parsed int: " + 1);
                 }else{
                     MAP[i, j] = int.Parse(tileNums[i], hexNum);
+                    print("Parsed int: " + int.Parse(tileNums[i], hexNum));
                 }
             }
         }
         print("Parsed " + SPRITES.Length + " sprites.");
         print("Map size: " + W + " wide by " + H + " high");
+
+        ShowMap();
     }
     //公有函数用于获取和设置地图，防止报错
     static public int GET_MAP(int x, int y){
@@ -63,5 +67,24 @@ public class TileCamera : MonoBehaviour
             return;
         }
         MAP[x,y] = tNum;
+    }
+
+    void ShowMap(){
+        Tiles = new Tile[W, H];
+
+        for (int j = 0; j < H; j++)
+        {
+            for (int i = 0; i < W; i++)
+            {
+                if(MAP[i,j] != 0){
+                    Tile ti = Instantiate<Tile>(tilePrefab);
+                    ti.transform.SetParent(TILE_ANCHOR);
+                    ti.SetTile(i, j);
+                    Tiles[i, j] = ti;
+                }
+
+            }
+
+        }
     }
 }

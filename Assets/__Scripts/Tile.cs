@@ -8,7 +8,7 @@ public class Tile : MonoBehaviour
     public int x;
     public int y;
     public int tileNum;
-    public void SetTile(int ex, int eY, int eTileNum){
+    public void SetTile(int ex, int eY, int eTileNum = -1){
         x = ex;
         y = eY;
         transform.localPosition = new Vector3(x, y, 0);
