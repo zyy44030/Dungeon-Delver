@@ -9,17 +9,17 @@ public class InRoom : MonoBehaviour
     static public float WALL_T = 2;
     
     [Header("Set in Inspector")]
-    public bool keepInRoom = true;
+
     public float gridMult = 1;
 
-    private void LateUpdate() {
-        if(keepInRoom){
-            Vector2 rPos = roomPos;
-            rPos.x = Mathf.Clamp(rPos.x, WALL_T, ROOM_W - 1 - WALL_T);
-            rPos.y = Mathf.Clamp(rPos.y, WALL_T, ROOM_H - 1 - WALL_T);
-            roomPos = rPos;
-        }
-    }
+    // private void LateUpdate() {
+    //     if(keepInRoom){
+    //         Vector2 rPos = roomPos;
+    //         rPos.x = Mathf.Clamp(rPos.x, WALL_T, ROOM_W - 1 - WALL_T);
+    //         rPos.y = Mathf.Clamp(rPos.y, WALL_T, ROOM_H - 1 - WALL_T);
+    //         roomPos = rPos;
+    //     }
+    // }
 
     public Vector2 roomPos{
         get{
@@ -52,5 +52,17 @@ public class InRoom : MonoBehaviour
             rm.y *= ROOM_H;
             transform.position = rm + rPos;
         }
+    }
+
+    public Vector2 GetRoomPosOnGrid(float mult = -1){
+        if(mult == -1){
+            mult = gridMult;
+        }
+        Vector2 rPos = roomPos;
+        rPos /= mult;
+        rPos.x = Mathf.Round(roomPos.x);
+        rPos.y = Mathf.Round(roomPos.y);
+        rPos *= mult;
+        return rPos;
     }
 }
