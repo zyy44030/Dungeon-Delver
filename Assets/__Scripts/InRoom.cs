@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class InRoom : MonoBehaviour
 {
-    static public float ROOM_W = 20;
-    static public float ROOM_H = 12;
+    static public float ROOM_W = 19;
+    static public float ROOM_H = 11;
     static public float WALL_T = 2;
 
     static public Vector2[] DOORS = new Vector2[]{
-        new Vector2(18,6),
-        new Vector2(10.5f,11),
-        new Vector2(2,6),
-        new Vector2(10.5f,1)
+        new Vector2(17.5f,5),
+        new Vector2(10,9),
+        new Vector2(1.5f,5),
+        new Vector2(10,1)
     };
 
     [Header("Set in Inspector")]
@@ -32,7 +32,6 @@ public class InRoom : MonoBehaviour
             Vector2 tPos = transform.position;
             tPos.x -= 13.5f;
             tPos.x %= ROOM_W;
-            tPos.y += 1;
             tPos.y %= ROOM_H;
             return tPos;
         }
@@ -41,7 +40,6 @@ public class InRoom : MonoBehaviour
             rm.x *= ROOM_W;
             rm.x += 13.5f;
             rm.y *= ROOM_H;
-            rm.y -= 1;
             rm += value;
             transform.position = rm;
         }
@@ -51,7 +49,7 @@ public class InRoom : MonoBehaviour
         get{
             Vector2 tPos = transform.position;
             tPos.x = Mathf.Floor((tPos.x - 13.5f) / ROOM_W);
-            tPos.y = Mathf.Floor((tPos.y + 1)/ ROOM_H);
+            tPos.y = Mathf.Floor(tPos.y/ ROOM_H);
             return tPos;
         }
         set{
@@ -60,7 +58,6 @@ public class InRoom : MonoBehaviour
             rm.x *= ROOM_W;
             rm.x += 13.5f;
             rm.y *= ROOM_H;
-            rm.y -= 1;
             transform.position = rm + rPos;
         }
     }

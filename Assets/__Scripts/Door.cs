@@ -2,17 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
+public class Door : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [Header("Set in Inspector")]
+    public int dir;
+    void Awake()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    private void OnCollisionEnter2D(Collision2D other) {
+        if(other.gameObject.name == "Dray" && other.gameObject.GetComponent<Dray>().GetFacing() == dir){
+            Destroy(gameObject);
+        }
+    }
+    private void OnCollisionStay(Collision other) {
+        if(other.gameObject.name == "Dray" && other.gameObject.GetComponent<Dray>().GetFacing() == dir){
+            Destroy(gameObject);
+        }
     }
 }
