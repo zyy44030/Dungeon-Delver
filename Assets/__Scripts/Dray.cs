@@ -10,16 +10,19 @@ public class Dray : MonoBehaviour, IFacingMover
     public float speed = 5;
     public float attackDuration = 0.25f;
     public float attackDelay = 0.5f;
+    public float transitionDelay = 0.5f;
 
     [Header("Set Dynamically")]
     public int dirHeld = -1;
-    public int facing = 1;
+    public int facing = 0;
     public eMode mode = eMode.idle;
     private float timeAtkDone = 0;
     private float timeAtkNext = 0;
     private Rigidbody2D rigid;
     private Animator anim;
     private InRoom InRm;
+    private float transitionDone = 0;
+    private Vector2 transitionPos;
     private Vector3[] directions =  new Vector3[]{
         Vector3.right,
         Vector3.up,
@@ -41,6 +44,7 @@ public class Dray : MonoBehaviour, IFacingMover
     }
     
     private void Update() {
+        
         dirHeld = -1;
         //按住移动键
         for (int i = 0; i < 4; i++){
@@ -65,6 +69,14 @@ public class Dray : MonoBehaviour, IFacingMover
                 facing = dirHeld;
                 mode = eMode.move;
             }
+        }
+        //场景转换
+        if(mode== eMode.transition){
+            rigid.velocity = Vector2.zero;
+            anim.speed = 0;
+            roomPos = transitionPos;
+            if(Time.time < transitionDone) return;
+            mode = eMode.idle;
         }
         //动画
         
@@ -93,6 +105,46 @@ public class Dray : MonoBehaviour, IFacingMover
                 break;
         }
         rigid.velocity = vel * speed;
+    }
+
+    private void LateUpdate() {
+        int doorNum;
+        if (roomPos.x >= InRoom.DOORS[0].x && roomPos.y == InRoom.DOORS[0].y) { doorNum = 0;}
+        else if (roomPos.x == InRoom.DOORS[1].x && roomPos.y >= InRoom.DOORS[1].y) { doorNum = 1;}
+        else if (roomPos.x <= InRoom.DOORS[2].x && roomPos.y == InRoom.DOORS[2].y) { doorNum = 2;}
+        else if (roomPos.x == InRoom.DOORS[3].x && roomPos.y <= InRoom.DOORS[3].y) { doorNum = 3;}
+        else { doorNum = 4;}
+        
+        // print("InRoom.DOORS[doorNum].x : " + InRoom.DOORS[doorNum].x);
+        
+
+        if(doorNum > 3 || doorNum != facing) return;
+        print("here??");
+        // print("roomPos.x: " + roomPos.x);
+        // print("doorNum: "+ doorNum);
+        // print("facing: " + facing);
+
+        Vector2 rm = roomNum;
+        switch (doorNum)
+        {
+            case 0:
+                rm.x += 1;
+                break;
+            case 1:
+                rm.y += 1;
+                break;
+            case 2:
+                rm.x -= 1;
+                break;
+            case 3:
+                rm.y -= 1;
+                break;
+        }
+        roomNum = rm;
+        transitionPos = InRoom.DOORS[(doorNum + 2) % 4];
+        roomPos = transitionPos;
+        mode = eMode.transition;
+        transitionDone = Time.time + transitionDelay;
     }
 
     //实现接口
