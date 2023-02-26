@@ -4,18 +4,24 @@ using UnityEngine;
 
 public class Dray : MonoBehaviour, IFacingMover
 {
-    public enum eMode { idle, move, attack, transition }
+    public enum eMode { idle, move, attack, transition, knockback }
 
     [Header("Set in Inspector")]
     public float speed = 5;
     public float attackDuration = 0.25f;
     public float attackDelay = 0.5f;
     public float transitionDelay = 0.5f;
+    public int maxHealth = 10;
+    public float knockbackSpeed = 10;
+    public float knockbackDuration = 0.25f;
+    public float invincibleDuration = 0.5f;
 
     [Header("Set Dynamically")]
+    public bool invincible = false;
     public int dirHeld = -1;
     public int facing = 0;
     public eMode mode = eMode.idle;
+    public int numKeys = 0;
     private float timeAtkDone = 0;
     private float timeAtkNext = 0;
     private Rigidbody2D rigid;
@@ -23,6 +29,24 @@ public class Dray : MonoBehaviour, IFacingMover
     private InRoom InRm;
     private float transitionDone = 0;
     private Vector2 transitionPos;
+    private float knockbackDone = 0;
+    private float invincibleDone = 0;
+    private Vector3 knockbackVel;
+    private SpriteRenderer sRender;
+
+    [SerializeField]
+    private int _health;
+
+    public int health{
+        get { return _health;}
+        set { _health = value;}
+    }
+
+    public int keyCount{
+        get { return numKeys; }
+        set { numKeys = value; }
+    }
+
     private Vector3[] directions =  new Vector3[]{
         Vector3.right,
         Vector3.up,
@@ -38,13 +62,30 @@ public class Dray : MonoBehaviour, IFacingMover
     };
 
     private void Awake() {
+        sRender = GetComponent<SpriteRenderer>();
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         InRm = GetComponent<InRoom>();
+        health = maxHealth;
     }
     
     private void Update() {
-        
+        //无敌状态
+        if(invincible && Time.timeSinceLevelLoad > invincibleDone) invincible = false;
+        sRender.color = invincible ? Color.red : Color.white;
+        //受击
+        if(mode == eMode.knockback){
+            rigid.velocity = knockbackVel;
+            if(Time.time < knockbackDone) return;
+        }
+        //场景转换
+        if(mode == eMode.transition){
+            rigid.velocity = Vector2.zero;
+            anim.speed = 0;
+            roomPos = transitionPos;
+            if(Time.time < transitionDone) return;
+            mode = eMode.idle;
+        }
         dirHeld = -1;
         //按住移动键
         for (int i = 0; i < 4; i++){
@@ -60,7 +101,6 @@ public class Dray : MonoBehaviour, IFacingMover
         if(Time.time >= timeAtkDone){
             mode = eMode.idle;
         }
-
         //切换模式
         if(mode != eMode.attack){
             if(dirHeld == -1){
@@ -70,24 +110,8 @@ public class Dray : MonoBehaviour, IFacingMover
                 mode = eMode.move;
             }
         }
-        //场景转换
-        if(mode== eMode.transition){
-            rigid.velocity = Vector2.zero;
-            anim.speed = 0;
-            roomPos = transitionPos;
-            if(Time.time < transitionDone) return;
-            mode = eMode.idle;
-        }
-        //动画
-        
+        //动画，移动
         Vector3 vel = Vector3.zero;
-        // if(dirHeld > -1) vel = directions[dirHeld];
-        // if(dirHeld == -1){
-        //     anim.speed = 0;
-        // }else{
-        //     anim.CrossFade("Dray_Walk_" + dirHeld, 0);
-        //     anim.speed = 1;
-        // }
         switch (mode)
         {
             case eMode.attack:
@@ -115,14 +139,7 @@ public class Dray : MonoBehaviour, IFacingMover
         else if (roomPos.x == InRoom.DOORS[3].x && roomPos.y <= InRoom.DOORS[3].y) { doorNum = 3;}
         else { doorNum = 4;}
         
-        // print("InRoom.DOORS[doorNum].x : " + InRoom.DOORS[doorNum].x);
-        
-
         if(doorNum > 3 || doorNum != facing) return;
-        print("here??");
-        // print("roomPos.x: " + roomPos.x);
-        // print("doorNum: "+ doorNum);
-        // print("facing: " + facing);
 
         Vector2 rm = roomNum;
         switch (doorNum)
@@ -140,11 +157,38 @@ public class Dray : MonoBehaviour, IFacingMover
                 rm.y -= 1;
                 break;
         }
-        roomNum = rm;
-        transitionPos = InRoom.DOORS[(doorNum + 2) % 4];
-        roomPos = transitionPos;
-        mode = eMode.transition;
-        transitionDone = Time.time + transitionDelay;
+        if(rm.x >= 0 && rm.x <= InRoom.MAX_RM_X){
+            if(rm.y >= 0 && rm.y <= InRoom.MAX_RM_Y){
+                roomNum = rm;
+                transitionPos = InRoom.DOORS[(doorNum + 2) % 4];
+                roomPos = transitionPos;
+                mode = eMode.transition;
+                transitionDone = Time.time + transitionDelay;
+            }
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other) {
+        if(invincible) return;
+        Enemy enemy = other.gameObject.GetComponent<Enemy>();
+        if(enemy == null) return;
+        health -= enemy.damage;
+        invincible = true;
+        invincibleDone = Time.time + invincibleDuration;
+        if(enemy.knockback){
+            Vector3 delta = transform.position - other.transform.position;
+            if(Mathf.Abs(delta.x) >= Mathf.Abs(delta.y)){
+                delta.x = (delta.x > 0) ? 1 : -1;
+                delta.y = 0;
+            }else{
+                delta.x = 0;
+                delta.y = (delta.y > 0) ? 1 : -1;
+            }
+            knockbackVel = delta * knockbackSpeed;
+            rigid.velocity = knockbackVel;
+            mode = eMode.knockback;
+            knockbackDone = Time.time + knockbackDuration;
+        }
     }
 
     //实现接口

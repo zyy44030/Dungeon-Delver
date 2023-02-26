@@ -16,9 +16,4 @@ public class Door : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    private void OnCollisionStay(Collision other) {
-        if(other.gameObject.name == "Dray" && other.gameObject.GetComponent<Dray>().GetFacing() == dir){
-            Destroy(gameObject);
-        }
-    }
 }

@@ -13,6 +13,8 @@ public class Enemy : MonoBehaviour
 
     [Header("Set in Inspector: Enemy")]
     public float MaxHealth = 1;
+    public int damage;
+    public bool knockback;
     [Header("Set Dynamically: Enemy")]
     public float health;
     protected Animator anim;

@@ -9,6 +9,7 @@ public class Skeletos : Enemy, IFacingMover
     public int speed = 2;
     public float timeThinkMin = 1f;
     public float timeThinkMax = 4f;
+
     [Header("Set Dynamically: Skeletos")]
     public int facing = 0;
     public float timeNextDecision = 0;
