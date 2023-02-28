@@ -2980,7 +2980,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5.2
+  orthographic size: 6.17
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -5436,6 +5436,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: DelverPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 114000011822264596, guid: ef2195d4d1bab4df9ad6dc73b0faebb1, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012080220376, guid: ef2195d4d1bab4df9ad6dc73b0faebb1, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 104
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013842314466, guid: ef2195d4d1bab4df9ad6dc73b0faebb1, type: 3}
+      propertyPath: m_Spacing
+      value: 70
+      objectReference: {fileID: 0}
     - target: {fileID: 224000010121386780, guid: ef2195d4d1bab4df9ad6dc73b0faebb1, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -5615,6 +5627,14 @@ PrefabInstance:
     - target: {fileID: 224000012856586228, guid: ef2195d4d1bab4df9ad6dc73b0faebb1, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013524883534, guid: ef2195d4d1bab4df9ad6dc73b0faebb1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013524883534, guid: ef2195d4d1bab4df9ad6dc73b0faebb1, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 224000013636971372, guid: ef2195d4d1bab4df9ad6dc73b0faebb1, type: 3}
       propertyPath: m_AnchorMax.y
@@ -12471,6 +12491,7 @@ GameObject:
   - component: {fileID: 1685790179}
   - component: {fileID: 1685790181}
   - component: {fileID: 1685790180}
+  - component: {fileID: 1685790182}
   m_Layer: 0
   m_Name: Sword
   m_TagString: Untagged
@@ -12571,6 +12592,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1685790182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685790178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5ed7e14062619049a270fbb775278de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 1
+  pushAway: 1
 --- !u!1 &1934883782
 GameObject:
   m_ObjectHideFlags: 0
@@ -12683,7 +12718,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5.5
+  orthographic size: 6.88
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -12998,10 +13033,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7867f9bf7cda684fa02f7a618a59280, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHealth: 1
+  MaxHealth: 10
+  knockbackSpeed: 10
+  knockbackDuration: 0.25
+  invincibleDuration: 0.5
   damage: 1
-  knockback: 1
+  pushAway: 1
   health: 0
+  invincible: 0
+  knockback: 1
   speed: 2
   timeThinkMin: 1
   timeThinkMax: 4

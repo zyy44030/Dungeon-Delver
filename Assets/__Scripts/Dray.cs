@@ -175,7 +175,7 @@ public class Dray : MonoBehaviour, IFacingMover
         health -= enemy.damage;
         invincible = true;
         invincibleDone = Time.time + invincibleDuration;
-        if(enemy.knockback){
+        if(enemy.pushAway){
             Vector3 delta = transform.position - other.transform.position;
             if(Mathf.Abs(delta.x) >= Mathf.Abs(delta.y)){
                 delta.x = (delta.x > 0) ? 1 : -1;
