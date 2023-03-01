@@ -191,6 +191,20 @@ public class Dray : MonoBehaviour, IFacingMover
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D other) {
+        PickUp item = other.gameObject.GetComponent<PickUp>();
+        if(item == null) return;
+        switch(item.itemType){
+            case PickUp.eType.key:
+                keyCount += 1;
+                break;
+            case PickUp.eType.health:
+                health = Mathf.Min( health + 2, maxHealth ); 
+                break;
+        }
+        Destroy(other.gameObject);
+    }
+
     //实现接口
     public int GetFacing(){
         return facing;
